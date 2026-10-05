@@ -1,0 +1,2 @@
+early stopping
+no of voyage > no of ships bottleneck
