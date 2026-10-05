@@ -3,3 +3,9 @@ PPT
 PS PDF
 __pycache__
 Draft
+.venv/
+.ipynb_checkpoints/
+*.log
+.vercel/
+.env.*
+.cloud-wheels/

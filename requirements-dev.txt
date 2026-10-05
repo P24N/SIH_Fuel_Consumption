@@ -1,0 +1,14 @@
+# Local Streamlit and notebook environment
+-r requirements.txt
+streamlit==1.65.0
+matplotlib==3.11.2
+seaborn==0.13.2
+statsmodels==0.15.0
+xgboost==3.4.1
+qiskit==2.5.2
+qiskit-algorithms==0.4.0
+qiskit-machine-learning==0.9.1
+qiskit-aer==0.17.2
+qiskit-ibm-runtime==0.50.0
+jupyterlab==4.6.4
+ipykernel==7.4.0

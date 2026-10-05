@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Green Fleet | Dispatch & Decarbonization</title>
+  <link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script>
+</head>
+<body>
+<header><a class="brand" href="/">◈ GREEN FLEET</a><span id="health" role="status">Checking model…</span></header>
+<main>
+  <section class="intro"><p class="eyebrow">MARITIME DECISION SUPPORT</p><h1>A clearer course.<br><span>A cleaner fleet.</span></h1>
+  <p>Plan voyages, compare dispatch strategies, and explore the cost of a lower-emission fleet.</p></section>
+  <div class="workspace">
+  <aside><h2>Operational controls</h2><p class="muted">Weights are normalized before each run.</p>
+    <label>Energy weight<input id="energy" type="number" min="0" max="1" step="0.05" value="0.4"></label>
+    <label>Emissions weight<input id="emissions" type="number" min="0" max="1" step="0.05" value="0.4"></label>
+    <label>Cost weight<input id="cost" type="number" min="0" max="1" step="0.05" value="0.2"></label>
+    <label>Carbon tax · USD / t CO₂e<input id="tax" type="number" min="0" max="300" value="100"></label>
+    <hr><label>Generations<input id="generations" type="number" min="5" max="100" value="40"></label>
+    <label>Population<input id="population" type="number" min="5" max="100" value="30"></label>
+    <label>Random seed<input id="seed" type="number" min="0" max="4294967295" value="42"></label>
+    <p class="muted">Inputs stay in this browser tab. CSV exports let you save a scenario or result.</p>
+  </aside>
+  <div class="content">
+    <nav aria-label="Workspace"><button data-tab="config" class="selected">01 · Fleet & missions</button><button data-tab="dispatch">02 · Dispatch</button><button data-tab="benchmark">03 · Benchmarks</button><button data-tab="fuels">04 · Fuel pathways</button></nav>
+    <div id="message" role="status" aria-live="polite"></div>
+    <section id="config" class="panel">
+      <h2>Fleet registry</h2><p class="muted">Use a unique vessel name and a separate ship type. Up to 20 vessels and routes.</p>
+      <div class="tools"><button id="add-fleet">+ Add vessel</button><label class="upload">Import CSV<input type="file" id="import-fleet" accept=".csv,text/csv"></label><button id="export-fleet">Export CSV</button></div>
+      <div id="fleet-editor" class="table-wrap"></div>
+      <h2>Voyage missions</h2><div class="tools"><button id="add-routes">+ Add route</button><label class="upload">Import CSV<input type="file" id="import-routes" accept=".csv,text/csv"></label><button id="export-routes">Export CSV</button></div>
+      <div id="routes-editor" class="table-wrap"></div>
+    </section>
+    <section id="dispatch" class="panel" hidden><h2>Fleet dispatch</h2><p class="muted">Compare the quantum-inspired heuristic with the classical MILP baseline using the same inputs and carbon tax.</p>
+      <div class="tools"><button class="primary run" data-action="qga">Run QGA dispatch</button><button class="run" data-action="milp">Run classical MILP</button></div>
+      <div id="result-qga"></div><div id="result-milp"></div>
+    </section>
+    <section id="benchmark" class="panel" hidden><h2>Scaling & dynamic benchmarks</h2><p class="muted">Synthetic experiments, capped at 12 routes and vessels for cloud execution. MILP receives a 15-second solve budget.</p>
+      <div class="tools"><label>Routes<input id="n_routes" type="number" min="2" max="12" value="8"></label><label>Vessels<input id="n_vessels" type="number" min="2" max="12" value="8"></label></div>
+      <div class="tools"><button class="primary run" data-action="stress">Run scaling benchmark</button><button class="run" data-action="dynamic">Run speed & berth benchmark</button></div>
+      <div id="result-stress"></div><div id="result-dynamic"></div>
+    </section>
+    <section id="fuels" class="panel" hidden><h2>Alternative fuel pathways</h2><p class="muted">Compare HFO, LNG, methanol, ammonia, and hydrogen using the same fleet, missions, and policy weights. Results are model estimates.</p>
+      <button class="primary run" data-action="fuels">Compare fuel scenarios</button><div id="result-fuels"></div>
+    </section>
+  </div></div>
+  <footer>Quantum-inspired fuel model · Server-side inference · Results depend on training coverage and operational assumptions.</footer>
+</main>
+</body></html>

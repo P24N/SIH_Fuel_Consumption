@@ -1,0 +1,23 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": "public",
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 60,
+      "includeFiles": "{qirf_fuel_predictor.joblib,model_manifest.json,app_backend.py,cloud/**}",
+      "excludeFiles": "{.venv/**,.cloud-wheels/**,.git/**,.github/**,.streamlit/**,datasets/**,trash/**,tests/**,scripts/**,public/**,*.ipynb,app.py,requirements-dev.txt}"
+    }
+  },
+  "headers": [
+    {"source": "/(.*)", "headers": [
+      {"key": "X-Content-Type-Options", "value": "nosniff"},
+      {"key": "Referrer-Policy", "value": "same-origin"},
+      {"key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"}
+    ]},
+    {"source": "/", "headers": [{"key": "Cache-Control", "value": "no-cache"}]},
+    {"source": "/(.*).js", "headers": [{"key": "Cache-Control", "value": "no-cache"}]},
+    {"source": "/(.*).css", "headers": [{"key": "Cache-Control", "value": "no-cache"}]}
+  ]
+}

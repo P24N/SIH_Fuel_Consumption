@@ -1,0 +1,20 @@
+.venv
+.cloud-wheels
+.git
+.github
+.streamlit
+__pycache__
+**/__pycache__
+*.ipynb
+.ipynb_checkpoints
+datasets
+trash
+tests
+scripts
+app.py
+requirements-dev.txt
+*.log
+.env*
+PPT
+PS PDF
+Draft

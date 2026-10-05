@@ -5,6 +5,7 @@ MILP benchmark solver, and scenario simulation engine.
 """
 
 import time
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import joblib
@@ -154,6 +155,7 @@ def generate_stress_test_data(n_routes=15, n_vessels=10, seed=42):
     for i in range(n_vessels):
         name = f"Vessel_{i+1:02d}_{np.random.choice(ship_types)}"
         stress_fleet[name] = {
+            'Ship_Type': name.split('_', 2)[2],
             'Engine_Type': str(np.random.choice(engine_types)),
             'Maintenance_Status': 'Good' if np.random.rand() > 0.15 else 'Critical',
             'Fuel_Type': str(np.random.choice(fuel_types)),
@@ -191,6 +193,9 @@ def generate_stress_test_data(n_routes=15, n_vessels=10, seed=42):
 # ==========================================================
 def load_digital_twin(bundle_path='qirf_fuel_predictor.joblib'):
     """Loads preprocessor and reconstructed digital twin via class factory."""
+    bundle_path = Path(bundle_path)
+    if not bundle_path.is_absolute():
+        bundle_path = Path(__file__).resolve().parent / bundle_path
     model, preprocessor, features, _ = QuantumInspiredFuelRegressor.load(bundle_path)
     return preprocessor, model, features
 
@@ -218,7 +223,7 @@ def precompute_operational_eval_cache(voyage_schedule, vessel_registry, preproce
                 continue
 
             batch = pd.DataFrame([{
-                'Ship_Type': ship_name,
+                'Ship_Type': ship_meta.get('Ship_Type', ship_name),
                 'Route_Type': mission['route_type'],
                 'Engine_Type': ship_meta['Engine_Type'],
                 'Maintenance_Status': ship_meta['Maintenance_Status'],
@@ -532,7 +537,8 @@ def optimize_fleet_schedule(voyage_schedule, vessel_registry, preprocessor, qirf
 # 6. CLASSICAL BENCHMARK SOLVER (MILP VIA HIGHS)
 # ==========================================================
 def optimize_fleet_classical_milp(voyage_schedule, vessel_registry, preprocessor, qirf_model, 
-                                 feature_cols, weights=(0.4, 0.4, 0.2),carbon_tax_per_ton=0.0):
+                                 feature_cols, weights=(0.4, 0.4, 0.2),carbon_tax_per_ton=0.0,
+                                 time_limit=None):
     """
     Deterministic classical benchmark: Branch-and-Cut MILP with slack formulation.
     """
@@ -582,7 +588,8 @@ def optimize_fleet_classical_milp(voyage_schedule, vessel_registry, preprocessor
     integrality = np.ones(num_vars)
     bounds = (np.zeros(num_vars), np.ones(num_vars))
 
-    res = milp(c=c, integrality=integrality, constraints=constraints, bounds=bounds)
+    res = milp(c=c, integrality=integrality, constraints=constraints, bounds=bounds,
+               options={'time_limit': time_limit} if time_limit is not None else None)
     runtime = time.perf_counter() - start_time
 
     records = []
@@ -689,7 +696,7 @@ import numpy as np
 import time
 from scipy.optimize import milp, LinearConstraint
 
-def run_dynamic_benchmark(voyage_schedule, available_ships, vessel_registry):
+def run_dynamic_benchmark(voyage_schedule, available_ships, vessel_registry, time_limit=None):
     """
     Benchmarks MILP vs QGA when speed selection (K speed tiers) and berth clashing 
     are co-optimized dynamically, breaking Total Unimodularity (TUM).
@@ -781,7 +788,8 @@ def run_dynamic_benchmark(voyage_schedule, available_ships, vessel_registry):
     integrality = np.ones(n_vars)
     bounds = (0, 1)
 
-    res = milp(c=c, integrality=integrality, constraints=constraints, bounds=bounds)
+    res = milp(c=c, integrality=integrality, constraints=constraints, bounds=bounds,
+               options={'time_limit': time_limit} if time_limit is not None else None)
     milp_runtime = time.perf_counter() - milp_start
     milp_cost = res.fun if (res.success and res.fun < 1e7) else float('nan')
 
