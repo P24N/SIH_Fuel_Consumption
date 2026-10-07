@@ -1,0 +1,201 @@
+Ship_Type,Engine_Type,Maintenance_Status,Fuel_Type,Draft_meters,Max_Capacity
+Tanker,Two-Stroke,Fair,Ammonia,15.9,156550
+Bulk Carrier,Two-Stroke,Critical,LNG,13.4,111970
+Container Ship,Four-Stroke,Good,Heavy Fuel Oil (HFO),8.7,22431
+Tanker,Two-Stroke,Good,Heavy Fuel Oil (HFO),15.4,110386
+Tanker,Two-Stroke,Fair,Ammonia,13.8,144962
+Tanker,Four-Stroke,Good,Hydrogen,13.3,101936
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),13.7,65860
+Bulk Carrier,Two-Stroke,Good,Ammonia,12.0,114559
+Tanker,Four-Stroke,Good,LNG,16.9,102939
+Tanker,Two-Stroke,Good,Heavy Fuel Oil (HFO),13.4,154531
+Tanker,Two-Stroke,Good,Ammonia,16.3,108994
+Bulk Carrier,Four-Stroke,Fair,Hydrogen,11.3,108131
+Bulk Carrier,Four-Stroke,Fair,LNG,13.8,108927
+Tanker,Two-Stroke,Fair,Ammonia,16.5,98110
+Bulk Carrier,Four-Stroke,Good,Ammonia,13.9,79510
+Bulk Carrier,Four-Stroke,Good,Ammonia,14.0,102794
+Tanker,Two-Stroke,Good,Heavy Fuel Oil (HFO),13.1,119927
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),14.6,90514
+Bulk Carrier,Four-Stroke,Good,Heavy Fuel Oil (HFO),12.2,64618
+Tanker,Four-Stroke,Good,Heavy Fuel Oil (HFO),16.2,151002
+Container Ship,Four-Stroke,Good,Heavy Fuel Oil (HFO),9.3,46363
+Container Ship,Two-Stroke,Good,LNG,8.0,45125
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),14.8,80256
+Tanker,Two-Stroke,Good,Heavy Fuel Oil (HFO),16.8,158024
+Bulk Carrier,Two-Stroke,Good,Ammonia,13.4,62213
+Fish Carrier,Gas Turbine,Good,LNG,4.9,4197
+Tanker,Two-Stroke,Good,LNG,14.0,143313
+Tanker,Two-Stroke,Fair,LNG,13.4,127504
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),13.7,95453
+Tanker,Four-Stroke,Fair,Ammonia,15.8,102205
+Bulk Carrier,Two-Stroke,Good,LNG,14.7,66808
+Container Ship,Four-Stroke,Good,Heavy Fuel Oil (HFO),10.1,34432
+Fish Carrier,Gas Turbine,Good,LNG,5.3,6165
+Container Ship,Four-Stroke,Good,Heavy Fuel Oil (HFO),10.6,42295
+Tanker,Two-Stroke,Fair,Ammonia,13.4,90643
+Tanker,Four-Stroke,Good,Heavy Fuel Oil (HFO),15.6,138432
+Bulk Carrier,Four-Stroke,Good,LNG,13.6,104789
+Bulk Carrier,Four-Stroke,Good,Heavy Fuel Oil (HFO),12.1,82062
+Container Ship,Two-Stroke,Good,LNG,11.2,37089
+Bulk Carrier,Four-Stroke,Fair,Heavy Fuel Oil (HFO),12.1,103347
+Fish Carrier,Four-Stroke,Critical,LNG,6.8,7769
+Tanker,Two-Stroke,Good,LNG,16.9,157665
+Container Ship,Gas Turbine,Good,LNG,8.7,26092
+Tanker,Two-Stroke,Good,Hydrogen,15.5,96802
+Container Ship,Four-Stroke,Good,LNG,10.8,40926
+Container Ship,Two-Stroke,Good,Hydrogen,11.5,43353
+Container Ship,Two-Stroke,Good,LNG,10.8,37748
+Tanker,Two-Stroke,Good,Heavy Fuel Oil (HFO),15.3,96578
+Bulk Carrier,Four-Stroke,Good,Heavy Fuel Oil (HFO),11.1,95449
+Bulk Carrier,Four-Stroke,Fair,Heavy Fuel Oil (HFO),14.1,91334
+Bulk Carrier,Four-Stroke,Critical,Ammonia,13.2,91881
+Tanker,Two-Stroke,Fair,Heavy Fuel Oil (HFO),16.2,112606
+Bulk Carrier,Two-Stroke,Fair,Ammonia,14.3,117758
+Bulk Carrier,Four-Stroke,Good,LNG,13.2,75014
+Fish Carrier,Two-Stroke,Good,Hydrogen,5.9,6689
+Tanker,Two-Stroke,Fair,Heavy Fuel Oil (HFO),13.1,143049
+Container Ship,Two-Stroke,Good,Heavy Fuel Oil (HFO),9.9,39628
+Bulk Carrier,Four-Stroke,Fair,Ammonia,12.6,86031
+Tanker,Two-Stroke,Fair,LNG,15.0,133810
+Bulk Carrier,Four-Stroke,Good,Ammonia,11.1,98545
+Tanker,Four-Stroke,Good,Ammonia,14.8,135030
+Fish Carrier,Four-Stroke,Fair,Heavy Fuel Oil (HFO),5.0,7526
+Bulk Carrier,Four-Stroke,Fair,Heavy Fuel Oil (HFO),11.3,100980
+Container Ship,Two-Stroke,Good,LNG,8.5,24864
+Container Ship,Two-Stroke,Good,Heavy Fuel Oil (HFO),9.1,43121
+Fish Carrier,Two-Stroke,Critical,Hydrogen,5.4,5063
+Container Ship,Four-Stroke,Critical,LNG,11.0,30014
+Tanker,Two-Stroke,Fair,LNG,14.3,147852
+Fish Carrier,Gas Turbine,Good,Hydrogen,5.3,3456
+Tanker,Two-Stroke,Good,Heavy Fuel Oil (HFO),14.2,121391
+Container Ship,Four-Stroke,Good,LNG,8.4,42636
+Tanker,Two-Stroke,Good,Heavy Fuel Oil (HFO),14.4,152139
+Tanker,Two-Stroke,Good,LNG,13.3,97078
+Container Ship,Four-Stroke,Good,Hydrogen,8.3,17847
+Container Ship,Four-Stroke,Fair,LNG,11.9,48153
+Container Ship,Four-Stroke,Good,Hydrogen,9.7,34544
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),11.2,88119
+Container Ship,Four-Stroke,Good,Ammonia,11.8,35417
+Bulk Carrier,Two-Stroke,Good,Hydrogen,11.0,117793
+Tanker,Four-Stroke,Good,Ammonia,13.3,159507
+Tanker,Two-Stroke,Critical,Ammonia,14.8,138702
+Bulk Carrier,Two-Stroke,Good,LNG,14.8,76857
+Bulk Carrier,Two-Stroke,Fair,Heavy Fuel Oil (HFO),12.9,71287
+Fish Carrier,Two-Stroke,Good,Hydrogen,6.2,7931
+Tanker,Four-Stroke,Good,LNG,16.6,101383
+Tanker,Two-Stroke,Fair,LNG,16.7,119277
+Tanker,Two-Stroke,Good,Heavy Fuel Oil (HFO),16.9,146738
+Fish Carrier,Two-Stroke,Good,LNG,6.6,7210
+Bulk Carrier,Four-Stroke,Good,Hydrogen,14.3,111883
+Container Ship,Two-Stroke,Fair,Heavy Fuel Oil (HFO),11.4,48066
+Fish Carrier,Gas Turbine,Good,Hydrogen,5.1,6030
+Bulk Carrier,Two-Stroke,Good,LNG,13.1,100294
+Tanker,Two-Stroke,Fair,Ammonia,16.5,129265
+Container Ship,Four-Stroke,Fair,Heavy Fuel Oil (HFO),10.8,36710
+Tanker,Four-Stroke,Good,Ammonia,14.6,131294
+Tanker,Four-Stroke,Critical,Ammonia,14.6,144855
+Bulk Carrier,Two-Stroke,Critical,Heavy Fuel Oil (HFO),13.0,115595
+Tanker,Two-Stroke,Fair,Heavy Fuel Oil (HFO),15.5,113012
+Bulk Carrier,Two-Stroke,Good,Ammonia,11.6,69114
+Container Ship,Four-Stroke,Fair,Heavy Fuel Oil (HFO),10.7,31588
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),11.7,76715
+Bulk Carrier,Two-Stroke,Good,Ammonia,13.0,81856
+Tanker,Two-Stroke,Good,Hydrogen,16.5,95723
+Container Ship,Four-Stroke,Good,Heavy Fuel Oil (HFO),8.7,41189
+Tanker,Two-Stroke,Good,LNG,14.9,115823
+Container Ship,Four-Stroke,Good,LNG,10.0,46332
+Tanker,Two-Stroke,Good,Ammonia,14.1,106972
+Bulk Carrier,Two-Stroke,Good,LNG,11.5,79649
+Container Ship,Two-Stroke,Good,LNG,8.3,32445
+Tanker,Two-Stroke,Good,Ammonia,14.1,98930
+Tanker,Two-Stroke,Fair,Heavy Fuel Oil (HFO),15.4,159056
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),11.7,69640
+Bulk Carrier,Two-Stroke,Good,Hydrogen,12.6,91470
+Fish Carrier,Four-Stroke,Good,LNG,6.5,7327
+Fish Carrier,Gas Turbine,Fair,LNG,5.9,5783
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),13.0,85526
+Bulk Carrier,Two-Stroke,Fair,Heavy Fuel Oil (HFO),11.6,94874
+Bulk Carrier,Two-Stroke,Good,Hydrogen,11.3,68064
+Bulk Carrier,Two-Stroke,Good,Ammonia,14.0,100890
+Bulk Carrier,Two-Stroke,Good,Hydrogen,14.3,115771
+Fish Carrier,Gas Turbine,Good,Hydrogen,4.7,3906
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),11.8,107716
+Tanker,Two-Stroke,Good,LNG,14.4,126614
+Tanker,Four-Stroke,Good,Heavy Fuel Oil (HFO),14.9,116386
+Bulk Carrier,Four-Stroke,Good,Ammonia,12.5,113974
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),13.5,116389
+Tanker,Two-Stroke,Good,LNG,16.6,127342
+Bulk Carrier,Four-Stroke,Good,Ammonia,11.1,104636
+Bulk Carrier,Two-Stroke,Good,LNG,11.4,109275
+Container Ship,Two-Stroke,Good,LNG,8.9,20247
+Tanker,Two-Stroke,Critical,Heavy Fuel Oil (HFO),14.0,127990
+Tanker,Two-Stroke,Good,Hydrogen,14.8,118059
+Tanker,Four-Stroke,Good,LNG,13.1,132801
+Tanker,Two-Stroke,Good,Heavy Fuel Oil (HFO),15.8,154574
+Tanker,Two-Stroke,Fair,Hydrogen,16.7,141551
+Fish Carrier,Gas Turbine,Good,Hydrogen,4.8,7194
+Tanker,Four-Stroke,Fair,Heavy Fuel Oil (HFO),13.2,117930
+Bulk Carrier,Two-Stroke,Good,LNG,13.1,83890
+Container Ship,Four-Stroke,Fair,LNG,8.9,30827
+Tanker,Two-Stroke,Good,Ammonia,16.7,119324
+Bulk Carrier,Two-Stroke,Good,Hydrogen,11.7,99812
+Bulk Carrier,Two-Stroke,Good,Ammonia,13.0,119812
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),11.8,113883
+Tanker,Two-Stroke,Good,Ammonia,16.1,94599
+Tanker,Four-Stroke,Critical,Heavy Fuel Oil (HFO),13.6,129174
+Tanker,Two-Stroke,Fair,Ammonia,15.6,108952
+Container Ship,Four-Stroke,Good,Heavy Fuel Oil (HFO),8.1,38062
+Bulk Carrier,Four-Stroke,Good,Heavy Fuel Oil (HFO),14.2,66246
+Bulk Carrier,Four-Stroke,Good,LNG,13.9,74590
+Tanker,Two-Stroke,Fair,LNG,14.2,104348
+Bulk Carrier,Two-Stroke,Good,Ammonia,11.7,61591
+Container Ship,Two-Stroke,Good,Ammonia,9.0,26963
+Tanker,Two-Stroke,Critical,Ammonia,15.2,118658
+Container Ship,Two-Stroke,Good,LNG,11.5,19903
+Tanker,Two-Stroke,Good,Ammonia,14.1,91572
+Bulk Carrier,Two-Stroke,Good,Ammonia,14.9,110095
+Bulk Carrier,Two-Stroke,Good,Ammonia,11.5,114857
+Tanker,Two-Stroke,Critical,Heavy Fuel Oil (HFO),13.8,148081
+Container Ship,Four-Stroke,Critical,LNG,10.4,35909
+Tanker,Two-Stroke,Good,Heavy Fuel Oil (HFO),15.1,116819
+Bulk Carrier,Two-Stroke,Good,Heavy Fuel Oil (HFO),12.0,96189
+Container Ship,Two-Stroke,Critical,LNG,10.3,25399
+Container Ship,Two-Stroke,Fair,Heavy Fuel Oil (HFO),8.1,22522
+Tanker,Two-Stroke,Fair,LNG,14.3,131778
+Container Ship,Four-Stroke,Good,Ammonia,10.8,32342
+Container Ship,Four-Stroke,Fair,LNG,9.1,39314
+Fish Carrier,Four-Stroke,Good,LNG,6.9,3684
+Container Ship,Two-Stroke,Good,LNG,11.2,40627
+Bulk Carrier,Four-Stroke,Fair,Hydrogen,11.9,89365
+Container Ship,Gas Turbine,Fair,LNG,8.7,47383
+Tanker,Four-Stroke,Good,Hydrogen,16.7,110814
+Container Ship,Four-Stroke,Good,LNG,9.3,44559
+Bulk Carrier,Two-Stroke,Good,Ammonia,11.3,67234
+Bulk Carrier,Two-Stroke,Good,LNG,13.2,78917
+Container Ship,Two-Stroke,Fair,Heavy Fuel Oil (HFO),8.9,36555
+Container Ship,Gas Turbine,Good,LNG,11.8,33512
+Container Ship,Two-Stroke,Critical,LNG,9.9,29067
+Container Ship,Four-Stroke,Fair,LNG,9.7,29621
+Tanker,Two-Stroke,Fair,Heavy Fuel Oil (HFO),14.2,110106
+Fish Carrier,Two-Stroke,Critical,Hydrogen,5.5,5138
+Container Ship,Gas Turbine,Good,LNG,9.7,18129
+Tanker,Four-Stroke,Good,Heavy Fuel Oil (HFO),17.0,101692
+Tanker,Two-Stroke,Fair,Heavy Fuel Oil (HFO),13.9,125888
+Container Ship,Two-Stroke,Critical,Hydrogen,8.2,27254
+Fish Carrier,Gas Turbine,Fair,Hydrogen,5.5,3869
+Container Ship,Two-Stroke,Good,LNG,8.9,22855
+Bulk Carrier,Four-Stroke,Critical,Heavy Fuel Oil (HFO),12.1,112647
+Container Ship,Four-Stroke,Good,LNG,10.6,43333
+Tanker,Two-Stroke,Good,Ammonia,15.9,108182
+Tanker,Two-Stroke,Good,Ammonia,16.4,95329
+Container Ship,Four-Stroke,Good,LNG,10.7,27173
+Container Ship,Two-Stroke,Good,LNG,11.4,38045
+Tanker,Two-Stroke,Good,LNG,15.5,137609
+Container Ship,Four-Stroke,Good,Heavy Fuel Oil (HFO),11.3,16023
+Bulk Carrier,Two-Stroke,Good,Ammonia,14.3,109078
+Tanker,Two-Stroke,Good,Heavy Fuel Oil (HFO),15.5,158683
+Container Ship,Gas Turbine,Good,LNG,11.0,18744
+Tanker,Two-Stroke,Fair,Hydrogen,13.4,155241
+Bulk Carrier,Two-Stroke,Good,Ammonia,11.3,102490
+Bulk Carrier,Four-Stroke,Fair,Hydrogen,14.9,112292

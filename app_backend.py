@@ -155,7 +155,7 @@ def generate_stress_test_data(n_routes=15, n_vessels=10, seed=42):
     for i in range(n_vessels):
         name = f"Vessel_{i+1:02d}_{np.random.choice(ship_types)}"
         stress_fleet[name] = {
-            'Ship_Type': name.split('_', 2)[2],
+            'Ship_Type': str(np.random.choice(ship_types)),
             'Engine_Type': str(np.random.choice(engine_types)),
             'Maintenance_Status': 'Good' if np.random.rand() > 0.15 else 'Critical',
             'Fuel_Type': str(np.random.choice(fuel_types)),
@@ -203,75 +203,180 @@ def load_digital_twin(bundle_path='qirf_fuel_predictor.joblib'):
 # ==========================================================
 # 4. PRE-EVALUATION CACHE HELPER
 # ==========================================================
-def precompute_operational_eval_cache(voyage_schedule, vessel_registry, preprocessor, 
-                                     qirf_model, feature_cols, candidate_speeds, weights,carbon_tax_per_ton=0.0):
+# def precompute_operational_eval_cache(voyage_schedule, vessel_registry, preprocessor, 
+#                                      qirf_model, feature_cols, candidate_speeds, weights,carbon_tax_per_ton=0.0):
+#     """
+#     Evaluates candidate speeds across viable ship-route assignments using the QIRF model.
+#     """
+#     w_energy, w_emissions, w_cost = weights
+#     available_ships = list(vessel_registry.keys())
+#     eval_cache = {}
+
+#     for r_idx, mission in enumerate(voyage_schedule):
+#         for s_idx, ship_name in enumerate(available_ships):
+#             ship_meta = vessel_registry[ship_name]
+
+#             # Infeasible checks
+#             if ship_meta['Maintenance_Status'] == 'Critical':
+#                 continue
+#             if mission['cargo_weight_tons'] > ship_meta['Max_Capacity']:
+#                 continue
+
+#             batch = pd.DataFrame([{
+#                 'Ship_Type': ship_name,
+#                 'Route_Type': mission['route_type'],
+#                 'Engine_Type': ship_meta['Engine_Type'],
+#                 'Maintenance_Status': ship_meta['Maintenance_Status'],
+#                 'Fuel_Type': ship_meta['Fuel_Type'],
+#                 'Weather_Condition': mission['weather_condition'],
+#                 'Speed_Over_Ground_knots': spd,
+#                 'Distance_Traveled_nm': mission['distance_nm'],
+#                 'Draft_meters': ship_meta['Draft_meters'],
+#                 'Cargo_Weight_tons': mission['cargo_weight_tons'],
+#                 'Max_Capacity': ship_meta['Max_Capacity'],
+#                 'Current_Load': mission['cargo_weight_tons'],
+#                 'Seasonal_Impact_Score': 1.0
+#             } for spd in candidate_speeds])
+
+#             X_proc = preprocessor.transform(batch[feature_cols])
+#             energies = qirf_model.predict(X_proc)
+#             fuel_info = FUEL_SPECS.get(ship_meta['Fuel_Type'], {'emission_factor': 0.55, 'cost_per_kwh': 0.10})
+
+#             feasible = []
+#             for spd, energy in zip(candidate_speeds, energies):
+#                 duration = mission['distance_nm'] / spd
+#                 if duration <= mission['max_arrival_hours']:
+#                     em = energy * fuel_info['emission_factor']
+#                     # 1. Base bunker fuel cost
+#                     bunker_cost = energy * fuel_info['cost_per_kwh']
+
+#                     # 2. Emissions tax penalty: (emissions / 1000 to convert kg to metric tons) * tax_per_ton
+#                     carbon_penalty = (em / 1000.0) * carbon_tax_per_ton
+
+#                     # 3. Total economic cost passed to objective function
+#                     cost = bunker_cost + carbon_penalty
+#                     # cost = energy * fuel_info['cost_per_kwh']
+#                     obj = (w_energy * energy) + (w_emissions * em) + (w_cost * cost)
+#                     feasible.append({
+#                         'speed': spd,
+#                         'energy_kwh': energy,
+#                         'emissions_kg': em,
+#                         'bunker_cost': bunker_cost,
+#                         'carbon_penalty': carbon_penalty,
+#                         'cost_usd': cost,
+#                         'duration_hours': duration,
+#                         'obj': obj
+#                     })
+#             if feasible:
+#                 eval_cache[(r_idx, s_idx)] = min(feasible, key=lambda x: x['obj'])
+
+#     return eval_cache
+# --------------------------------------------------------------------------------------------------------
+
+def precompute_operational_eval_cache(
+    voyage_schedule,
+    vessel_registry,
+    preprocessor,
+    qirf_model,
+    feature_cols,
+    candidate_speeds,
+    weights,
+    carbon_tax_per_ton=0.0
+):
     """
     Evaluates candidate speeds across viable ship-route assignments using the QIRF model.
+    Fully vectorized batch inference: takes ~0.5s instead of 40s.
     """
     w_energy, w_emissions, w_cost = weights
     available_ships = list(vessel_registry.keys())
     eval_cache = {}
 
+    all_records = []
+    # Tracks (r_idx, s_idx, spd) for mapping predictions back
+    lookup_metadata = []
+
+    # 1. Collect all feasible (route, ship, speed) evaluation rows into one batch
     for r_idx, mission in enumerate(voyage_schedule):
         for s_idx, ship_name in enumerate(available_ships):
             ship_meta = vessel_registry[ship_name]
 
-            # Infeasible checks
+            # Infeasible physical checks
             if ship_meta['Maintenance_Status'] == 'Critical':
                 continue
             if mission['cargo_weight_tons'] > ship_meta['Max_Capacity']:
                 continue
 
-            batch = pd.DataFrame([{
-                'Ship_Type': ship_meta.get('Ship_Type', ship_name),
-                'Route_Type': mission['route_type'],
-                'Engine_Type': ship_meta['Engine_Type'],
-                'Maintenance_Status': ship_meta['Maintenance_Status'],
-                'Fuel_Type': ship_meta['Fuel_Type'],
-                'Weather_Condition': mission['weather_condition'],
-                'Speed_Over_Ground_knots': spd,
-                'Distance_Traveled_nm': mission['distance_nm'],
-                'Draft_meters': ship_meta['Draft_meters'],
-                'Cargo_Weight_tons': mission['cargo_weight_tons'],
-                'Max_Capacity': ship_meta['Max_Capacity'],
-                'Current_Load': mission['cargo_weight_tons'],
-                'Seasonal_Impact_Score': 1.0
-            } for spd in candidate_speeds])
-
-            X_proc = preprocessor.transform(batch[feature_cols])
-            energies = qirf_model.predict(X_proc)
-            fuel_info = FUEL_SPECS.get(ship_meta['Fuel_Type'], {'emission_factor': 0.55, 'cost_per_kwh': 0.10})
-
-            feasible = []
-            for spd, energy in zip(candidate_speeds, energies):
+            for spd in candidate_speeds:
                 duration = mission['distance_nm'] / spd
-                if duration <= mission['max_arrival_hours']:
-                    em = energy * fuel_info['emission_factor']
-                    # 1. Base bunker fuel cost
-                    bunker_cost = energy * fuel_info['cost_per_kwh']
+                # Deadline check before model prediction to prune unnecessary rows
+                if duration > mission['max_arrival_hours']:
+                    continue
 
-                    # 2. Emissions tax penalty: (emissions / 1000 to convert kg to metric tons) * tax_per_ton
-                    carbon_penalty = (em / 1000.0) * carbon_tax_per_ton
+                all_records.append({
+                    'Ship_Type': ship_meta['Ship_Type'],
+                    'Route_Type': mission['route_type'],
+                    'Engine_Type': ship_meta['Engine_Type'],
+                    'Maintenance_Status': ship_meta['Maintenance_Status'],
+                    'Fuel_Type': ship_meta['Fuel_Type'],
+                    'Weather_Condition': mission['weather_condition'],
+                    'Speed_Over_Ground_knots': spd,
+                    'Distance_Traveled_nm': mission['distance_nm'],
+                    'Draft_meters': ship_meta['Draft_meters'],
+                    'Cargo_Weight_tons': mission['cargo_weight_tons'],
+                    'Max_Capacity': ship_meta['Max_Capacity'],
+                    'Current_Load': mission['cargo_weight_tons'],
+                    'Seasonal_Impact_Score': 1.0
+                })
+                lookup_metadata.append((r_idx, s_idx, spd, duration))
 
-                    # 3. Total economic cost passed to objective function
-                    cost = bunker_cost + carbon_penalty
-                    # cost = energy * fuel_info['cost_per_kwh']
-                    obj = (w_energy * energy) + (w_emissions * em) + (w_cost * cost)
-                    feasible.append({
-                        'speed': spd,
-                        'energy_kwh': energy,
-                        'emissions_kg': em,
-                        'bunker_cost': bunker_cost,
-                        'carbon_penalty': carbon_penalty,
-                        'cost_usd': cost,
-                        'duration_hours': duration,
-                        'obj': obj
-                    })
-            if feasible:
-                eval_cache[(r_idx, s_idx)] = min(feasible, key=lambda x: x['obj'])
+    if not all_records:
+        return eval_cache
+
+    # 2. Run ONE single batch transform and prediction
+    batch_df = pd.DataFrame(all_records)
+    if feature_cols:
+        batch_df = batch_df[feature_cols]
+
+    X_proc = preprocessor.transform(batch_df)
+    energies = qirf_model.predict(X_proc)
+
+    # 3. Group predictions by (r_idx, s_idx) to find the speed that minimizes obj
+    pair_candidates = {}
+
+    for idx, (r_idx, s_idx, spd, duration) in enumerate(lookup_metadata):
+        energy = energies[idx]
+        ship_meta = vessel_registry[available_ships[s_idx]]
+        fuel_info = FUEL_SPECS.get(ship_meta['Fuel_Type'], {'emission_factor': 0.55, 'cost_per_kwh': 0.10})
+
+        em = energy * fuel_info['emission_factor']
+        bunker_cost = energy * fuel_info['cost_per_kwh']
+        carbon_penalty = (em / 1000.0) * carbon_tax_per_ton
+        cost = bunker_cost + carbon_penalty
+
+        obj = (w_energy * energy) + (w_emissions * em) + (w_cost * cost)
+
+        candidate_entry = {
+            'speed': spd,
+            'energy_kwh': energy,
+            'emissions_kg': em,
+            'bunker_cost': bunker_cost,
+            'carbon_penalty': carbon_penalty,
+            'cost_usd': cost,
+            'duration_hours': duration,
+            'obj': obj
+        }
+
+        pair_key = (r_idx, s_idx)
+        if pair_key not in pair_candidates:
+            pair_candidates[pair_key] = []
+        pair_candidates[pair_key].append(candidate_entry)
+
+    # 4. Populate eval_cache with the optimal speed candidate for each (r_idx, s_idx)
+    for pair_key, feasible in pair_candidates.items():
+        if feasible:
+            eval_cache[pair_key] = min(feasible, key=lambda x: x['obj'])
 
     return eval_cache
-
 
 # ==========================================================
 # 5. QUANTUM-INSPIRED GENETIC ALGORITHM (QGA)
@@ -290,6 +395,7 @@ def optimize_fleet_schedule(voyage_schedule, vessel_registry, preprocessor, qirf
     eval_cache = precompute_operational_eval_cache(
         voyage_schedule, vessel_registry, preprocessor, qirf_model, feature_cols, candidate_speeds, weights, carbon_tax_per_ton
     )
+
     start_time = time.perf_counter()
     feasibility_mask = np.zeros((num_routes, num_ships), dtype=int)
     for (r, s) in eval_cache.keys():
@@ -306,48 +412,89 @@ def optimize_fleet_schedule(voyage_schedule, vessel_registry, preprocessor, qirf
     # Default selection probability ~ 1 / S
     base_p1 = max(0.05, 1.0 / num_ships)
     
-    # 2. Score candidate compatibility from pre-evaluated lookup
-    # Higher affinity for lower-cost feasible ship-route pairs
-    for r in range(num_routes):
-        # Collect costs of all feasible assignments for this route
-        route_costs = []
-        for s in range(num_ships):
-            entry = eval_cache.get((r, s))
-            if entry is not None and entry.get('status', 'FEASIBLE') == 'FEASIBLE':
-                route_costs.append((s, entry.get('cost', entry.get('cost_usd', 1e6))))
-            else:
-                route_costs.append((s, float('inf')))
+    # # 2. Score candidate compatibility from pre-evaluated lookup
+    # # Higher affinity for lower-cost feasible ship-route pairs
+    # for r in range(num_routes):
+    #     # Collect costs of all feasible assignments for this route
+    #     route_costs = []
+    #     for s in range(num_ships):
+    #         entry = eval_cache.get((r, s))
+    #         if entry is not None and entry.get('status', 'FEASIBLE') == 'FEASIBLE':
+    #             route_costs.append((s, entry.get('cost', entry.get('cost_usd', 1e6))))
+    #         else:
+    #             route_costs.append((s, float('inf')))
 
-        # Sort feasible ships by cost for this route
-        valid_pairs = [pair for pair in route_costs if pair[1] < float('inf')]
+    #     # Sort feasible ships by cost for this route
+    #     valid_pairs = [pair for pair in route_costs if pair[1] < float('inf')]
         
-        for s, cost in route_costs:
-            if cost == float('inf'):
-                # Infeasible / deadline violation: suppress |1> probability strongly (~2%)
-                p_one = 0.02
-            else:
-                # Feasible ship: rank-based greedy boost
-                # Rank 0 (cheapest) gets highest probability
-                rank = sorted([p[1] for p in valid_pairs]).index(cost) if valid_pairs else 0
-                rank_weight = 1.0 / (rank + 1.0)
-                p_one = min(0.65, base_p1 * (1.0 + rank_weight))
+    #     for s, cost in route_costs:
+    #         if cost == float('inf'):
+    #             # Infeasible / deadline violation: suppress |1> probability strongly (~2%)
+    #             p_one = 0.02
+    #         else:
+    #             # Feasible ship: rank-based greedy boost
+    #             # Rank 0 (cheapest) gets highest probability
+    #             rank = sorted([p[1] for p in valid_pairs]).index(cost) if valid_pairs else 0
+    #             rank_weight = 1.0 / (rank + 1.0)
+    #             p_one = min(0.65, base_p1 * (1.0 + rank_weight))
 
-            # Ensure valid probability bounds [0.01, 0.99]
-            p_one = np.clip(p_one, 0.01, 0.99)
+    #         # Ensure valid probability bounds [0.01, 0.99]
+    #         p_one = np.clip(p_one, 0.01, 0.99)
             
-            # Map Born rule probabilities: beta = sqrt(P(|1>)), alpha = sqrt(1 - P(|1>))
-            beta_val = np.sqrt(p_one)
-            alpha_val = np.sqrt(1.0 - p_one)
+    #         # Map Born rule probabilities: beta = sqrt(P(|1>)), alpha = sqrt(1 - P(|1>))
+    #         beta_val = np.sqrt(p_one)
+    #         alpha_val = np.sqrt(1.0 - p_one)
 
-            # Assign to all chromosomes with slight random phase noise across population
-            for i in range(pop_size):
-                # Mild perturbation per individual preserves genetic diversity
-                noise = np.random.uniform(-0.02, 0.02)
-                b_noisy = np.clip(beta_val + noise, 0.05, 0.95)
-                a_noisy = np.sqrt(1.0 - b_noisy**2)
-                q_pop[i, r, s, 0] = a_noisy
-                q_pop[i, r, s, 1] = b_noisy
+    #         # Assign to all chromosomes with slight random phase noise across population
+    #         for i in range(pop_size):
+    #             # Mild perturbation per individual preserves genetic diversity
+    #             noise = np.random.uniform(-0.02, 0.02)
+    #             b_noisy = np.clip(beta_val + noise, 0.05, 0.95)
+    #             a_noisy = np.sqrt(1.0 - b_noisy**2)
+    #             q_pop[i, r, s, 0] = a_noisy
+    #             q_pop[i, r, s, 1] = b_noisy
 
+# -------------------------------------------------------------------------
+# 2. Score candidate compatibility from pre-evaluated lookup (Vectorized)
+# -------------------------------------------------------------------------
+    cost_matrix = np.full((num_routes, num_ships), np.inf)
+
+    for (r, s), entry in eval_cache.items():
+        cost_matrix[r, s] = entry.get('cost', entry.get('cost_usd', 1e6))
+
+    # Vectorized ranking: compute rank across all ships per route simultaneously
+    for r in range(num_routes):
+        row_costs = cost_matrix[r]
+        feasible_idx = np.where(np.isfinite(row_costs))[0]
+        
+        if len(feasible_idx) > 0:
+            # Sort only once per route instead of 200 times
+            sorted_order = np.argsort(row_costs[feasible_idx])
+            ranks = np.empty_like(sorted_order)
+            ranks[sorted_order] = np.arange(len(sorted_order))
+            
+            # Rank-based greedy boost
+            rank_weights = 1.0 / (ranks + 1.0)
+            p_ones = np.full(num_ships, 0.02)
+            p_ones[feasible_idx] = np.clip(base_p1 * (1.0 + rank_weights), 0.01, 0.65)
+        else:
+            p_ones = np.full(num_ships, base_p1)
+
+        p_ones = np.clip(p_ones, 0.01, 0.99)
+        beta_vals = np.sqrt(p_ones)
+        alpha_vals = np.sqrt(1.0 - p_ones)
+
+        # Assign to all chromosomes with mild perturbation across population
+        # Broadcast across all pop_size simultaneously:
+        noise = np.random.uniform(-0.02, 0.02, size=(pop_size, num_ships))
+        
+        # Broadcast across population
+        pop_betas = np.clip(beta_vals + noise, 0.01, 0.99)
+        pop_alphas = np.sqrt(1.0 - pop_betas**2)
+
+        q_pop[:, r, :, 0] = pop_alphas
+        q_pop[:, r, :, 1] = pop_betas
+# -------------------------------------------------------------
     best_deployment = None
     best_fitness = float('inf')
     convergence_history = []
@@ -361,7 +508,7 @@ def optimize_fleet_schedule(voyage_schedule, vessel_registry, preprocessor, qirf
 
 # -------------------------------------------------------------
     # Early stopping settings
-    patience = 12               # Number of generations to wait without improvement
+    patience = 8               # Number of generations to wait without improvement
     min_delta = 1e-4           # Minimum improvement threshold to reset counter
     stall_counter = 0          # Tracks non-improving generations
 # -------------------------------------------------------------
@@ -425,7 +572,9 @@ def optimize_fleet_schedule(voyage_schedule, vessel_registry, preprocessor, qirf
         min_idx = np.argmin(scores)
         gen_best_score = scores[min_idx]
 
-        if gen_best_score < best_fitness - min_delta:
+        # if gen_best_score < best_fitness - min_delta:
+        # 0.5% relative drop threshold
+        if (best_fitness - gen_best_score) / max(1.0, abs(best_fitness)) > 0.005 or np.isinf(best_fitness):
             best_fitness = gen_best_score
             best_deployment = np.copy(valid_states[min_idx])
             stall_counter = 0  # Reset counter on genuine improvement

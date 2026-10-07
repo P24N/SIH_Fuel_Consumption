@@ -192,15 +192,26 @@ with tab2:
     
     if st.button("🚀 Run Quantum-Inspired Fleet Optimization", type="primary"):
         # Convert the edited fleet table into the required vessel_registry dictionary:
+        # active_vessels_dict = {
+        #     row['Ship_Type']: {
+        #         'Engine_Type': row['Engine_Type'],
+        #         'Maintenance_Status': row['Maintenance_Status'],
+        #         'Fuel_Type': row['Fuel_Type'],
+        #         'Draft_meters': float(row['Draft_meters']),
+        #         'Max_Capacity': float(row['Max_Capacity'])
+        #     }
+        #     for _, row in st.session_state.vessel_data.iterrows()
+        # }
         active_vessels_dict = {
-            row['Ship_Type']: {
+            f"Vessel_{i+1:03d} ({row['Ship_Type']})": {
+                'Ship_Type': row['Ship_Type'],
                 'Engine_Type': row['Engine_Type'],
                 'Maintenance_Status': row['Maintenance_Status'],
                 'Fuel_Type': row['Fuel_Type'],
                 'Draft_meters': float(row['Draft_meters']),
                 'Max_Capacity': float(row['Max_Capacity'])
             }
-            for _, row in st.session_state.vessel_data.iterrows()
+            for i, row in st.session_state.vessel_data.reset_index(drop=True).iterrows()
         }
         routes_list = st.session_state.voyage_data.to_dict(orient='records')
         
@@ -275,14 +286,15 @@ with tab3:
     if st.button("⚖️ Run Baseline & Compare"):
         # Convert the edited fleet table into the required vessel_registry dictionary:
         active_vessels_dict = {
-            row['Ship_Type']: {
+            f"Vessel_{i+1:03d} ({row['Ship_Type']})": {
+                'Ship_Type': row['Ship_Type'],
                 'Engine_Type': row['Engine_Type'],
                 'Maintenance_Status': row['Maintenance_Status'],
                 'Fuel_Type': row['Fuel_Type'],
                 'Draft_meters': float(row['Draft_meters']),
                 'Max_Capacity': float(row['Max_Capacity'])
             }
-            for _, row in st.session_state.vessel_data.iterrows()
+            for i, row in st.session_state.vessel_data.reset_index(drop=True).iterrows()
         }
         routes_list = st.session_state.voyage_data.to_dict(orient='records')
         
