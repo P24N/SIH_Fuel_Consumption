@@ -9,3 +9,8 @@ Draft
 .vercel/
 .env.*
 .cloud-wheels/
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
