@@ -5,6 +5,11 @@ scipy==1.18.1
 scikit-learn==1.9.0
 joblib==1.6.0
 
+# Added later by Piyush to fix module not found errors while deploying
+matplotlib
+streamlit
+uvicorn
+
 # Pinned transitive runtime dependencies from the verified Linux wheel resolution
 cloudpickle==3.1.2
 narwhals==2.27.0
